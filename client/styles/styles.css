@@ -28,6 +28,10 @@ button {
   cursor: pointer;
 }
 
+.login-container {
+  text-align: center;
+}
+
 .customers {
   display: flex;
   justify-content: center;
@@ -35,12 +39,9 @@ button {
   flex-direction: column;
 }
 
-.table {
-}
-
 .create-customer-container {
   max-width: 600px;
-  margin: 50px auto;
+  margin: 20px auto;
   padding: 20px;
   background-color: #ffffff;
   border-radius: 5px;
@@ -78,7 +79,14 @@ button {
   cursor: pointer;
   margin: 4px;
 }
-
+.createCustomerForm-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+.createCustomerForm-buttons button {
+  width: 45%;
+  margin: 0;
+}
 .create-customer-container button:hover {
   background-color: #0056b3;
 }
