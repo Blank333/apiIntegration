@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create Customer</title>
+    <link rel="stylesheet" href="styles/styles.css" />
+  </head>
+  <body>
+    <div class="create-customer-container">
+      <h1>Create Customer</h1>
+      <form id="createCustomerForm">
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" required />
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" required />
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required />
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" required />
+        <label for="state">State:</label>
+        <input type="text" id="state" name="state" required />
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" required />
+        <button type="submit">Create</button>
+      </form>
+      <p id="error" style="color: red; display: none">
+        Error. Please try again.
+      </p>
+    </div>
+    <script>
+      document
+        .getElementById("createCustomerForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const first_name = document.getElementById("first_name").value;
+          const last_name = document.getElementById("last_name").value;
+          const address = document.getElementById("address").value;
+          const city = document.getElementById("city").value;
+          const state = document.getElementById("state").value;
+          const email = document.getElementById("email").value;
+          const phone = document.getElementById("phone").value;
+
+          const data = {
+            first_name: first_name,
+            last_name: last_name,
+            address: address,
+            city: city,
+            state: state,
+            email: email,
+            phone: phone,
+          };
+
+          try {
+            const response = await fetch(
+              "http://localhost:8080/api/create-customer",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+              }
+            );
+
+            if (!response.ok) {
+              document.getElementById("error").style.display = "block";
+              setTimeout(() => {
+                document.getElementById("error").style.display = "none";
+              }, 2000);
+              throw new Error("Failed to create customer.");
+            }
+
+            alert("Customer created successfully!");
+            document.getElementById("createCustomerForm").reset();
+            window.location.href = "customers.html";
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        });
+    </script>
+  </body>
+</html>

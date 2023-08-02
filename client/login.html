@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+    <link rel="stylesheet" href="styles/styles.css" />
+  </head>
+
+  <body>
+    <div class="login-container">
+      <h1>Login</h1>
+      <form id="loginForm">
+        <label for="login_id">Email:</label>
+        <input type="text" id="login_id" name="login_id" required />
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+        <button type="submit">Login</button>
+      </form>
+      <p id="error" style="color: red; display: none">
+        Invalid login credentials. Please try again.
+      </p>
+      <p id="success" style="color: Green; display: none">
+        Login successful. Redirecting...
+      </p>
+    </div>
+    <script>
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const login_id = document.getElementById("login_id").value;
+          const password = document.getElementById("password").value;
+
+          const data = {
+            login_id: login_id,
+            password: password,
+          };
+
+          try {
+            const response = await fetch(
+              "http://localhost:8080/api/authenticate",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+              }
+            );
+
+            if (!response.ok) {
+              document.getElementById("error").style.display = "block";
+              setTimeout(() => {
+                document.getElementById("error").style.display = "none";
+              }, 2000);
+              throw new Error("Login failed.");
+            } else {
+              document.getElementById("success").style.display = "block";
+            }
+
+            window.location.href = "customers.html";
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        });
+    </script>
+  </body>
+</html>

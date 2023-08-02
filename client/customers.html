@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Customer List</title>
+    <link rel="stylesheet" href="styles/styles.css" />
+  </head>
+  <body>
+    <h1>Customer List</h1>
+
+    <div>
+      <button onclick="createCustomer()">Create Customer</button>
+
+      <div class="customers">
+        <table id="customerList">
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Action</th>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <script>
+      fetch("http://localhost:8080/api/customers")
+        .then((response) => response.json())
+        .then((customers) => {
+          const customerList = document.getElementById("customerList");
+
+          customers.forEach((customer) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                    <td>${customer.first_name}</td>
+                    <td>${customer.last_name}</td>
+                    <td>${customer.street}, ${customer.address}</td>
+                    <td>${customer.city}</td>
+                    <td>${customer.state}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td>
+                        <button onclick="editCustomer('${customer.uuid}')">Edit</button>
+                        <button onclick="deleteCustomer('${customer.uuid}')">Delete</button>
+                    </td>
+                `;
+            customerList.appendChild(tr);
+          });
+        })
+        .catch((error) =>
+          console.error("Error fetching customer data:", error)
+        );
+
+      function createCustomer() {
+        // Add your logic here to create a new customer
+      }
+
+      function editCustomer(uuid) {
+        // Add your logic here to edit the customer with the given UUID
+      }
+
+      function deleteCustomer(uuid) {
+        // Add your logic here to delete the customer with the given UUID
+      }
+    </script>
+  </body>
+</html>
