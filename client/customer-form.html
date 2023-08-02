@@ -7,7 +7,10 @@
   </head>
   <body>
     <div class="create-customer-container">
-      <h1>Create Customer</h1>
+      <a href="./customers.html">
+        <button style="position: absolute; top: 80px">Back</button>
+      </a>
+      <h1>Customer Form</h1>
       <form id="createCustomerForm">
         <label for="first_name">First Name:</label>
         <input type="text" id="first_name" name="first_name" required />
@@ -26,12 +29,45 @@
         <label for="phone">Phone:</label>
         <input type="text" id="phone" name="phone" />
         <button type="submit">Create</button>
+        <button type="reset">Reset</button>
       </form>
       <p id="error" style="color: red; display: none">
         Error. Please try again.
       </p>
     </div>
     <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const uuid = urlParams.get("uuid");
+      const firstNameInput = document.getElementById("first_name");
+      const lastNameInput = document.getElementById("last_name");
+      const streetInput = document.getElementById("street");
+      const addressInput = document.getElementById("address");
+      const cityInput = document.getElementById("city");
+      const stateInput = document.getElementById("state");
+      const emailInput = document.getElementById("email");
+      const phoneInput = document.getElementById("phone");
+
+      if (uuid) {
+        // Retrieve customer data from URL parameters and populate the form
+        const firstName = urlParams.get("first_name");
+        const lastName = urlParams.get("last_name");
+        const street = urlParams.get("street");
+        const address = urlParams.get("address");
+        const city = urlParams.get("city");
+        const state = urlParams.get("state");
+        const email = urlParams.get("email");
+        const phone = urlParams.get("phone");
+
+        firstNameInput.value = firstName;
+        lastNameInput.value = lastName;
+        streetInput.value = street;
+        addressInput.value = address;
+        cityInput.value = city;
+        stateInput.value = state;
+        emailInput.value = email;
+        phoneInput.value = phone;
+      }
+
       document
         .getElementById("createCustomerForm")
         .addEventListener("submit", async function (event) {
@@ -58,28 +94,32 @@
           };
 
           try {
-            const response = await fetch(
-              "http://localhost:8080/api/create-customer",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-              }
-            );
+            let apiUrl = "http://localhost:8080/api/customer-form";
+            let method = "POST";
 
-            if (!response.ok) {
+            if (uuid) {
+              apiUrl += `/${uuid}`;
+            }
+
+            const response = await fetch(apiUrl, {
+              method: method,
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+              alert("Customer created/updated successfully!");
+              document.getElementById("createCustomerForm").reset();
+              window.location.href = "customers.html";
+            } else {
               document.getElementById("error").style.display = "block";
               setTimeout(() => {
                 document.getElementById("error").style.display = "none";
               }, 2000);
-              throw new Error("Failed to create customer.");
+              throw new Error("Failed to create/update customer.");
             }
-
-            alert("Customer created successfully!");
-            document.getElementById("createCustomerForm").reset();
-            window.location.href = "customers.html";
           } catch (error) {
             console.error("Error:", error);
           }

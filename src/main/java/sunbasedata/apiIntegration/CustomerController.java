@@ -19,7 +19,7 @@ public class CustomerController {
         return new ResponseEntity<>(customerService.login(authRequest), HttpStatus.OK);
     }
 
-    @PostMapping("/create-customer")
+    @PostMapping("/customer-form")
     public ResponseEntity<String> createCustomer(@RequestBody Customer customerRequest) throws JsonProcessingException {
         return customerService.create(customerRequest);
     }
@@ -31,8 +31,12 @@ public class CustomerController {
 
     @PostMapping("/delete-customer/{uuid}")
     public ResponseEntity<String> deleteCustomer(@PathVariable String uuid) {
-        return customerService.deleteCustomer(uuid);
+        return customerService.delete(uuid);
     }
 
+    @PostMapping("/customer-form/{uuid}")
+    public ResponseEntity<String> updateCustomer(@PathVariable String uuid, @RequestBody Customer customerRequest) throws JsonProcessingException {
+        return customerService.update(uuid, customerRequest);
+    }
 
 }

@@ -68,13 +68,15 @@ button {
   border-radius: 5px;
 }
 
-.create-customer-container button {
+.create-customer-container button,
+.customer-buttons {
   padding: 10px;
   background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin: 4px;
 }
 
 .create-customer-container button:hover {
@@ -83,4 +85,10 @@ button {
 
 .create-customer-container button:focus {
   outline: none;
+}
+
+.create-customer-button {
+  margin: 1rem;
+  margin-left: 9.6vw;
+  padding: 1rem;
 }

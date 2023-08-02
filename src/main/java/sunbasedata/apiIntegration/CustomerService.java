@@ -8,8 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -32,10 +30,6 @@ public class CustomerService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-
-//        assert response != null;
-//        System.out.println(response);
-//        bearerToken = response.trim().replaceAll("[{}\"]", "").split(":")[1];
 
         ObjectMapper mapper = new ObjectMapper();
         access_token = mapper.readTree(response).get("access_token").asText();
@@ -68,19 +62,18 @@ public class CustomerService {
         WebClient client = WebClient.builder().defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + access_token).build();
         String formData = new ObjectMapper().writeValueAsString(customerRequest);
 
-        String response = client.post()
+        client.post()
                 .uri(apiUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(formData)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-        System.out.println(formData);
 
         return new ResponseEntity<>("Successfully Created", HttpStatus.CREATED);
     }
 
-    public ResponseEntity<String> deleteCustomer(String uuid) {
+    public ResponseEntity<String> delete(String uuid) {
         String apiUrl = "https://qa2.sunbasedata.com/sunbase/portal/api/assignment.jsp?cmd=delete";
         WebClient client = WebClient.builder().defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + access_token).build();
 
@@ -94,6 +87,7 @@ public class CustomerService {
                 .block();
 
 
+        assert response != null;
         if (response.contains("Error Not deleted")) {
             return new ResponseEntity<>("Error Not deleted", HttpStatus.INTERNAL_SERVER_ERROR);
         } else if (response.contains("UUID not found")) {
@@ -101,6 +95,32 @@ public class CustomerService {
         } else {
             return new ResponseEntity<>("Successfully deleted", HttpStatus.OK);
         }
+    }
+
+    public ResponseEntity<String> update(String uuid, Customer customerRequest) throws JsonProcessingException {
+        if (customerRequest.getFirst_name() == null || customerRequest.getFirst_name().isEmpty() || customerRequest.getLast_name() == null || customerRequest.getLast_name().isEmpty()) {
+            return new ResponseEntity<>("First Name or Last Name is missing", HttpStatus.BAD_REQUEST);
+        }
+        if (uuid == null || uuid.isEmpty()) {
+            return new ResponseEntity<>("UUID not found", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        String apiUrl = "https://qa2.sunbasedata.com/sunbase/portal/api/assignment.jsp?cmd=update";
+        WebClient client = WebClient.builder().defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + access_token).build();
+
+        apiUrl += "&uuid=" + uuid;
+
+        String formData = new ObjectMapper().writeValueAsString(customerRequest);
+
+        String response = client.post()
+                .uri(apiUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(formData)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
     }
 
 }
