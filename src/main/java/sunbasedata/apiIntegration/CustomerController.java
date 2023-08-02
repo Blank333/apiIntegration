@@ -15,12 +15,12 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<String> authenticateUser(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<String> authenticateUser(@RequestBody AuthRequest authRequest) throws JsonProcessingException {
         return new ResponseEntity<>(customerService.login(authRequest), HttpStatus.OK);
     }
 
     @PostMapping("/create-customer")
-    public ResponseEntity<String> createCustomer(@RequestBody Customer customerRequest) {
+    public ResponseEntity<String> createCustomer(@RequestBody Customer customerRequest) throws JsonProcessingException {
         return new ResponseEntity<>(customerService.create(customerRequest), HttpStatus.CREATED);
     }
 

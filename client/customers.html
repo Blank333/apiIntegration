@@ -9,8 +9,7 @@
     <h1>Customer List</h1>
 
     <div>
-      <button onclick="createCustomer()">Create Customer</button>
-
+      <a href="./create-customer.html"><button>Create Customer</button> </a>
       <div class="customers">
         <table id="customerList">
           <tr>
@@ -30,6 +29,7 @@
       fetch("http://localhost:8080/api/customers")
         .then((response) => response.json())
         .then((customers) => {
+          customers.sort((a, b) => a.first_name.localeCompare(b.first_name));
           const customerList = document.getElementById("customerList");
 
           customers.forEach((customer) => {
@@ -37,7 +37,7 @@
             tr.innerHTML = `
                     <td>${customer.first_name}</td>
                     <td>${customer.last_name}</td>
-                    <td>${customer.street}, ${customer.address}</td>
+                    <td>${customer.street} ${customer.address}</td>
                     <td>${customer.city}</td>
                     <td>${customer.state}</td>
                     <td>${customer.email}</td>
@@ -53,10 +53,6 @@
         .catch((error) =>
           console.error("Error fetching customer data:", error)
         );
-
-      function createCustomer() {
-        // Add your logic here to create a new customer
-      }
 
       function editCustomer(uuid) {
         // Add your logic here to edit the customer with the given UUID
