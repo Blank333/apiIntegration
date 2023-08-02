@@ -21,12 +21,17 @@ public class CustomerController {
 
     @PostMapping("/create-customer")
     public ResponseEntity<String> createCustomer(@RequestBody Customer customerRequest) throws JsonProcessingException {
-        return new ResponseEntity<>(customerService.create(customerRequest), HttpStatus.CREATED);
+        return customerService.create(customerRequest);
     }
 
     @GetMapping ("/customers")
     public ResponseEntity<List<Customer>> getAllCustomers() throws JsonProcessingException {
         return new ResponseEntity<>(customerService.customers(), HttpStatus.OK);
+    }
+
+    @PostMapping("/delete-customer/{uuid}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable String uuid) {
+        return customerService.deleteCustomer(uuid);
     }
 
 

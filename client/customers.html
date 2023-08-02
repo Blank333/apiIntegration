@@ -54,12 +54,25 @@
           console.error("Error fetching customer data:", error)
         );
 
-      function editCustomer(uuid) {
-        // Add your logic here to edit the customer with the given UUID
-      }
+      function editCustomer(uuid) {}
 
       function deleteCustomer(uuid) {
-        // Add your logic here to delete the customer with the given UUID
+        fetch(`http://localhost:8080/api/delete-customer/${uuid}`, {
+          method: "POST",
+        })
+          .then((response) => {
+            if (response.ok) {
+              alert("Customer created successfully!");
+              window.location.reload();
+            } else if (response.status === 404) {
+              alert("UUID not found");
+            } else {
+              alert("Error deleting customer");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
       }
     </script>
   </body>

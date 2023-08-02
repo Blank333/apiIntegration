@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Objects;
@@ -60,10 +59,10 @@ public class CustomerService {
         });
     }
 
-    public String create(Customer customerRequest) throws JsonProcessingException {
+    public ResponseEntity<String> create(Customer customerRequest) throws JsonProcessingException {
 
         if (customerRequest.getFirst_name() == null || customerRequest.getFirst_name().isEmpty() || customerRequest.getLast_name() == null || customerRequest.getLast_name().isEmpty()) {
-            return String.valueOf(new ResponseEntity<>("First Name or Last Name is missing", HttpStatus.BAD_REQUEST));
+            return new ResponseEntity<>("First Name or Last Name is missing", HttpStatus.BAD_REQUEST);
         }
         String apiUrl = "https://qa2.sunbasedata.com/sunbase/portal/api/assignment.jsp?cmd=create";
         WebClient client = WebClient.builder().defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + access_token).build();
@@ -78,7 +77,30 @@ public class CustomerService {
                 .block();
         System.out.println(formData);
 
-        return response;
+        return new ResponseEntity<>("Successfully Created", HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<String> deleteCustomer(String uuid) {
+        String apiUrl = "https://qa2.sunbasedata.com/sunbase/portal/api/assignment.jsp?cmd=delete";
+        WebClient client = WebClient.builder().defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + access_token).build();
+
+        apiUrl += "&uuid=" + uuid;
+
+        String response = client.post()
+                .uri(apiUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+
+        if (response.contains("Error Not deleted")) {
+            return new ResponseEntity<>("Error Not deleted", HttpStatus.INTERNAL_SERVER_ERROR);
+        } else if (response.contains("UUID not found")) {
+            return new ResponseEntity<>("UUID not found", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>("Successfully deleted", HttpStatus.OK);
+        }
     }
 
 }
